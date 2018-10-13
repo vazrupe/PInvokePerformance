@@ -35,19 +35,27 @@ TRADITIONALAPI_API void __stdcall TA_Test1(unsigned __int64 nTestCount)
 }
 
 //	Run a test x times.
+double test2Temp = 0.0;
 TRADITIONALAPI_API void __stdcall TA_Test2(unsigned __int64 nTestCount)
 {
 	for(unsigned __int64 i = 1; i <= nTestCount; i++)
-		TA_CalculateSquareRoot((double)i);
+		test2Temp = TA_CalculateSquareRoot((double)i);
 }
 
 //	Run a test x times.
+double test3Temp = 0.0;
 TRADITIONALAPI_API void __stdcall TA_Test3(unsigned __int64 nTestCount)
 {
 	for(unsigned __int64 i = 1; i <= nTestCount; i++)
 	{
 		double arThreeTuple1[3] = {(double)i, (double)i, (double)i};
 		double arThreeTuple2[3] = {(double)i, (double)i, (double)i};
-		double result = TA_DotProduct(arThreeTuple1, arThreeTuple2);
+		test3Temp = TA_DotProduct(arThreeTuple1, arThreeTuple2);
 	}
+}
+
+
+TRADITIONALAPI_API double __stdcall Dummy()
+{
+	return g_uCounter + test2Temp + test3Temp;;
 }
