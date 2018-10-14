@@ -5,6 +5,8 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Security;
+using System.Security.Policy;
+using System.Windows;
 
 namespace PInvokePerformance
 {
@@ -113,8 +115,63 @@ namespace PInvokePerformance
                     var temp = PerformanceTest_UnsafePInvoke.Unsafe_PInvoke_Test3_call(source.Item1, source.Item2);
                 }
             });
+
+            var arr2 = Enumerable.Range(0, 100000000).Select(n => (double)n).ToArray();
+            var timeCpp1 = GetRunningTime(() => ComplexCpp(arr2, arr2, arr2.Length));
+            var timeCppUnman1 = GetRunningTime(() => ComplexCppUnman(arr2.Length));
+            var timeCSharp1 = GetRunningTime(() => ComplexCsharp(arr2, arr2, arr2.Length));
+
+            var targetNum = 1000000000;
+            var timeCpp2 = GetRunningTime(() => ComplexCpp2(targetNum));
+            var timeCppUnman2 = GetRunningTime(() => ComplexCpp2Unman(targetNum));
+            var timeCSharp2 = GetRunningTime(() => ComplexCsharp2(targetNum));
+
+
+#if TRACE
+            MessageBox.Show(
+                string.Join("\n", new [] {
+                    $"C extension: {timeCpp1}ms, {timeCppUnman1}ms / C#: {timeCSharp1}ms",
+                    $"C extension: {timeCpp2}ms, {timeCppUnman2}ms / C#: {timeCSharp2}ms"}));
+#endif
         }
-        
+
+
+        [DllImport("TraditionalAPI.dll")]
+        [SuppressUnmanagedCodeSecurity]
+        private static extern double ComplexCpp(double[] arr1, double[] arr2, int length);
+        [DllImport("TraditionalAPI.dll")]
+        [SuppressUnmanagedCodeSecurity]
+        private static extern double ComplexCpp2(int num);
+
+        [DllImport("TraditionalAPI.dll")]
+        [SuppressUnmanagedCodeSecurity]
+        private static extern double ComplexCppUnman(int length);
+        [DllImport("TraditionalAPI.dll")]
+        [SuppressUnmanagedCodeSecurity]
+        private static extern double ComplexCpp2Unman(int num);
+
+        public double ComplexCsharp(double[] arr1, double[] arr2, int length)
+        {
+            double r = 0.0;
+            for (int i = 0; i < length; i++)
+            {
+                r = r + arr1[i] * arr2[i];
+                r = r - arr1[i] * arr2[length - i - 1];
+                r = Math.Sqrt(r);
+            }
+            return r;
+        }
+        public double ComplexCsharp2(int num)
+        {
+            double n = num;
+
+            while (n > 1.0)
+            {
+                n = n / 1.00000001;
+            }
+            return n;
+        }
+
         public ulong TestCount { get; set; } = 1000000;
 
         public static double GetRunningTime(ulong count, Action<ulong> action)

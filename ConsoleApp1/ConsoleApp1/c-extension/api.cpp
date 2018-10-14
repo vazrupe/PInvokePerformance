@@ -1,10 +1,8 @@
 // TraditionalAPI.cpp : Defines the exported functions for the DLL application.
 //
 
-#include "stdafx.h"
-#include "TraditionalAPI.h"
+#include "api.h"
 #include <math.h>
-#include <tchar.h>
 
 //	A global counter.
 unsigned int g_uCounter = 0;
