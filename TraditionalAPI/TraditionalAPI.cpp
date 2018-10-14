@@ -48,8 +48,8 @@ TRADITIONALAPI_API void __stdcall TA_Test3(unsigned __int64 nTestCount)
 {
 	for(unsigned __int64 i = 1; i <= nTestCount; i++)
 	{
-		double arThreeTuple1[3] = {(double)i, (double)i, (double)i};
-		double arThreeTuple2[3] = {(double)i, (double)i, (double)i};
+		double arThreeTuple1[3] = {(double)i + 0.1, (double)i + 0.2, (double)i + 0.3 };
+		double arThreeTuple2[3] = {(double)i - 0.7, (double)i - 0.6, (double)i - 0.5 };
 		test3Temp = TA_DotProduct(arThreeTuple1, arThreeTuple2);
 	}
 }
